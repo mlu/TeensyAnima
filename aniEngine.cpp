@@ -20,6 +20,10 @@
 #include "mrcezusb.h"
 #endif
 
+#ifdef USE_DANCER_PETRUSJKA
+#include "mpetrusjka.h"
+#endif
+
 #ifdef USE_OPENGL
 #include "wdspopengl.h"
 #endif
@@ -85,6 +89,11 @@ bool newinstream=false;
 #ifdef USE_DANCER_EZUSB
 		  case DANCER_EZUSB:
 		    theDancer[i]=new mRCEzUSBProc();
+		    break;
+#endif
+#ifdef USE_DANCER_PETRUSJKA
+		  case DANCER_PETRUSJKA:
+		    theDancer[i]=new mPetrusjkaProc();
 		    break;
 #endif
 #ifdef USE_DANCER_OLYMPIA

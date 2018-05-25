@@ -12,6 +12,9 @@
 #define NDANCERS     4
 #define NDISPLAYS    2
 
+/* Petrusjka dancer */
+#define USE_DANCER_PETRUSJKA
+
 /* Teensy sound system */
 #define USE_SOUND
 #define TSOUND
@@ -37,6 +40,10 @@
 
 #ifdef USE_DANCER_OLYMPIA
 #define DANCER_OLYMPIA  5
+#endif
+
+#ifdef USE_DANCER_PETRUSJKA
+#define DANCER_PETRUSJKA  6
 #endif
 
 class aniEngine {
