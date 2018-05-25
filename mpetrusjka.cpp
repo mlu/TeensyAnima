@@ -16,38 +16,38 @@ This is a MOVEBODY structure controlling a Petrusjka RC servo robot
 
 /* Relation betwen servo position units, controller dependent, and Anima angles - resolution 2ms for ezusb */
 SERVOPROP petr_servoprop2[8]={
-   {(char*)"RKNEE V",  590,940,590, 1, 11.7, 'V'},
-   {(char*)"RHIP V",   600,940,940, -1,11.7, 'V'},
-   {(char*)"LKNEE V",  560,970,970, -1,11.7, 'V'},
-   {(char*)"LHIP V",   580,940,580, 1, 11.7, 'V'},
-   {(char*)"UPPERBACK",520,960,520, 1, 8.66, 'V'},
-   {(char*)"RARM V",   530,1010,1010,-1,3.7,  'V'},
-   {(char*)"LARM V",   530,1010, 530, 1,3.7,  'V'},
-   {(char*)"NONE",  0, 0, 0, 0, 0, 'R'}
+   {(char*)"RKNEE V",  590, 940, 590, 1, 11.7},
+   {(char*)"RHIP V",   600, 940, 940, -1,11.7},
+   {(char*)"LKNEE V",  560, 970, 970, -1,11.7},
+   {(char*)"LHIP V",   580, 940, 580, 1, 11.7},
+   {(char*)"UPPERBACK",520, 960, 520, 1, 8.66},
+   {(char*)"RARM V",   530, 1010, 1010,-1,3.7},
+   {(char*)"LARM V",   530, 1010,  530, 1,3.7},
+   {(char*)"NONE",  0, 0, 0, 0, 0}
 };
 
 /* Relation betwen servo position units, controller dependent, and Anima angles - resolution 1ms */
 SERVOPROP petr_servoprop1[8]={
-   {(char*)"RKNEE V",  1180, 1880, 1180,  1, 23.4, 'V'},
-   {(char*)"RHIP V",   1200, 1880, 1880, -1, 23.4, 'V'},
-   {(char*)"LKNEE V",  1120, 1940, 1940, -1, 23.4, 'V'},
-   {(char*)"LHIP V",   1160, 1880, 1160,  1, 23.4, 'V'},
-   {(char*)"UPPERBACK",1040, 1920, 1040,  1, 17.3, 'V'},
-   {(char*)"RARM V",   1060, 2020, 2020, -1, 7.4,  'V'},
-   {(char*)"LARM V",   1060, 2020, 1060,  1, 7.4,  'V'},
-   {(char*)"NONE",     0, 0, 0, 0, 0, 'R'}
+   {(char*)"RKNEE V",  1180, 1880, 1180,  1, 23.4},
+   {(char*)"RHIP V",   1200, 1880, 1880, -1, 23.4},
+   {(char*)"LKNEE V",  1120, 1940, 1940, -1, 23.4},
+   {(char*)"LHIP V",   1160, 1880, 1160,  1, 23.4},
+   {(char*)"UPPERBACK",1040, 1920, 1040,  1, 17.3},
+   {(char*)"RARM V",   1060, 2020, 2020, -1, 7.4},
+   {(char*)"LARM V",   1060, 2020, 1060,  1, 7.4},
+   {(char*)"NONE",     0, 0, 0, 0, 0}
 };
 
 /* Relation betwen servo position units, controller dependent, and Anima angles - resolution 0.25ms */
 SERVOPROP petr_servoprop[8]={
-   {(char*)"RKNEE V",  4720, 7520, 4720,  1, 93.6, 'V'},
-   {(char*)"RHIP V",   4800, 7520, 7520, -1, 23.4, 'V'},
-   {(char*)"LKNEE V",  4480, 3760, 3760, -1, 23.4, 'V'},
-   {(char*)"LHIP V",   4640, 7520, 4640,  1, 23.4, 'V'},
-   {(char*)"UPPERBACK",4160, 7680, 4160,  1, 69.2, 'V'},
-   {(char*)"RARM V",   4240, 8080, 8080, -1, 29.6,  'V'},
-   {(char*)"LARM V",   4240, 8080, 4240,  1, 29.6,  'V'},
-   {(char*)"NONE",     0, 0, 0, 0, 0, 'R'}
+   {(char*)"RKNEE V",  4720, 7520, 4720,  1, 93.6},
+   {(char*)"RHIP V",   4800, 7520, 7520, -1, 23.4},
+   {(char*)"LKNEE V",  4480, 3760, 3760, -1, 23.4},
+   {(char*)"LHIP V",   4640, 7520, 4640,  1, 23.4},
+   {(char*)"UPPERBACK",4160, 7680, 4160,  1, 69.2},
+   {(char*)"RARM V",   4240, 8080, 8080, -1, 29.6},
+   {(char*)"LARM V",   4240, 8080, 4240,  1, 29.6},
+   {(char*)"NONE",     0, 0, 0, 0, 0}
 };
 
 // Sensitivity must be adjusted for dutycycle

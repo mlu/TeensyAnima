@@ -20,42 +20,12 @@ This is a MOVEBODY structure
 
 /***************************************************************************
 *
-*   dirigent
-*
-****************************************************************************/
-
-//typedef struct {char * namn;int min;int max;int center;int direction;double resolution /* steg/grad */;char axis;} SERVOPROP;
-
-/*
-SERVOPROP servoprop[8]={
-   {"LARM V",20,230,20,1,1.17,'V'},
-   {"LARM H",35,235,157,1,1.5,'H'},
-   {"NONE",0,255,127,1,1.0,'H'},
-   {"RARM V",30,230,230,-1,1.11,'V'},
-   {"RARM R",50,190,116,-1,1.2,'R'},
-   {"RELBOW V",50,190,180,-1,1.2,'V'},
-   {"BODYTURN",25,230,127,1,1.4,'R'},
-   {"HEAD R",40,220,127,1,1.5,'R'}
-   };
-*/
-/***************************************************************************
-*
 *   Anima model robot joints
 *
 ****************************************************************************/
 
-//int nJoints=7;
-int RobJoint[7]   ={ BODYTURN, RARM, RARM, RELBOW, LARM, LARM, HEAD};
-int servonum[7]   ={ 6,        3,    4,    5,      0,    1,    7   };
-char RobJointAx[7]={ 'R',      'V',  'R', 'V',     'V',  'H',  'R'};
-int RobAngle[7];
-
 extern long thisTime;
-/* Cannot handle several servo controllers tied to different dancers */
 
-//ssc * gservo=NULL;
-
-//extern char outs[100];
 extern int GetMoveString(MoveTextCursor * aText,MOVEREC * aMoveRec);
 extern int GetMoveInteger(MoveTextCursor * aText,MOVEREC * move);
 
@@ -79,25 +49,6 @@ MOVEREC aMoveRec;
 mRCRobotProc::mRCRobotProc(void) {
   installFun((char *)"SETSERVOPORT",VFuncR,(long)setServoPort);
   servoControl = NULL;
-  /*
-  printf("Init:mRCRobotProc at %li   shape %li \n",this,theShape);
-    {              
-      FILE * f=fopen("servoconfig.txt","r");
-      char inbuf[128];
-      if (f) 
-	{
-	  fscanf(f,"%100s",inbuf);
-	  this->setPortName(inbuf);
-	  fclose(f);
-	}
-      else 
-	{
-	  char * errtxt =strerror(errno);
-	  printf("Could not open servoconfig.txt - %s\n",errtxt);
-	  setPortName("/dev/ttyS0");
-	}
-    }
-  */
   reset();
 }
 
@@ -193,8 +144,7 @@ void mRCRobotProc::ComputeRobotAngles(long atTime){
       /* Servo uses millisecon timing */
       dt=10*(t-atTime);
       pos = servovalue(servonum[joint],angle);
-      RobAngle[joint]=pos;
       //printf("servo.moveto %i %i %i  time=%li \n",servonum[joint],RobAngle[joint],dt,thisTime);
-      servoControl->moveto(servonum[joint],RobAngle[joint],dt);
+      servoControl->moveto(servonum[joint], pos, dt);
    }
 }

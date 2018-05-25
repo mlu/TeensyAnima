@@ -25,7 +25,7 @@ typedef struct {
 	int center;
 	int direction;
 	double resolution /* steg/grad */;
-	char axis;
+//	char axis;
 } SERVOPROP;
 
 class mRCRobotProc : public  mBodyProc {
