@@ -17,7 +17,6 @@ public:
     int setOption(const char * option,int value); 
 
 private:
-    int servovalue(int nr,double angle);
     int pulsecontrol;
     unsigned int lastpulsecount;
     double activitylevel;

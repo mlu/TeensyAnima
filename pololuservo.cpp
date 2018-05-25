@@ -29,8 +29,8 @@ pololuservo::pololuservo() {
 		servoctrl * servo=&(sb.servo[nr]);
 		servo->active=true;
 		servo->inupdate=false;
-		servo->position=127<<8;
-		servo->target=128<<8;
+		servo->position=1500<<2;
+		servo->target=1500<<2;
 		servo->intervall=0;
 	}
 }
@@ -39,19 +39,20 @@ pololuservo::~pololuservo() {
 }
 
 void pololuservo::openport(char * portname) {
-	Serial1.begin(9600);
+	Serial1.begin(57600);
 	isopen = true;
 	bufs = bufe = 0;
 }
 
 void pololuservo::set(int nr,int pos) {
-  if (((bufe+8)%POLOLUBUFSIZE) != bufs) {
-    buf[bufe] = 0x84;
-    buf[bufe+1] = nr&0x7F;
-    buf[bufe+2] = pos & 0x7F;
-    buf[bufe+3] = (pos>>7) & 0x7F;
-    bufe = (bufe+4)%POLOLUBUFSIZE;
-  }
+	
+	if (((bufe+8)%POLOLUBUFSIZE) != bufs) {
+		buf[bufe] = 0x84;
+		buf[bufe+1] = nr&0x7F;
+		buf[bufe+2] = pos & 0x7F;
+		buf[bufe+3] = (pos>>7) & 0x7F;
+		bufe = (bufe+4)%POLOLUBUFSIZE;
+	}
 }
 
 void pololuservo::send() { 

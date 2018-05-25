@@ -50,13 +50,16 @@ protected:
     void  ComputeRobotAngles(long atTime);
 
     // Controller and servo dependent angle to value conversion
-    virtual int servovalue(int nr,double angle)=0;
+    virtual int servovalue(int nr,double angle);
 
 	// Physical joint information
     int   nJoints;
     int * RobJoint;
     int * servonum;
     char * RobJointAx;
+
+	// Servo control interface
+    SERVOPROP * servoProperties;
 
 	// Servo control interface
     rcServoController * servoControl;

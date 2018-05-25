@@ -37,13 +37,10 @@ MOVEREC aMoveRec;
     GetMoveString(aText,&aMoveRec);
     portname=(char *)(aMoveRec.value);
     mBodyProc * bdy=((rMoveProc *)(aText->getOwner()))->theBody;
-    printf("(SETSERVOPORT - %s\n",portname);
-    if (strcmp(bdy->ClassName(),"mMiniSscRobotProc")==0) {
-       ((mRCRobotProc *) bdy)->setPortName(portname);
-    }
-    else if (strcmp(bdy->ClassName(),"mRCEzUSBProcProc")==0) {
-       ((mRCRobotProc *) bdy)->setPortName(portname);
-    }
+    char buf[64];
+    sprintf((char *)buf, "(SETSERVOPORT - %s)",portname);
+    Message(buf);
+    ((mRCRobotProc *) bdy) -> setPortName(portname);
 }
 
 mRCRobotProc::mRCRobotProc(void) {
@@ -115,7 +112,7 @@ void mRCRobotProc::ComputeRobotAngles(long atTime){
    /* Convert Anima VHR angles to servovalues */
    /* Send to servo as class as a ramp */
    int joint,pos,dt;
-   double angle;
+   double angle = 0;
    long t,nt;
    MOVE_POS  Pos;
    for (joint=0;joint<nJoints;joint++) {
@@ -148,3 +145,16 @@ void mRCRobotProc::ComputeRobotAngles(long atTime){
       servoControl->moveto(servonum[joint], pos, dt);
    }
 }
+
+int mRCRobotProc::servovalue(int nr,double angle){
+	SERVOPROP sp=servoProperties[nr];
+	double v;
+	int pos;
+	v = sp.direction*angle*sp.resolution+sp.center;
+	pos = (int)v;
+	if (pos < sp.min)
+		pos = sp.min;
+	if (pos > sp.max)
+		pos = sp.max;
+	return pos;
+};

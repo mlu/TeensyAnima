@@ -73,29 +73,17 @@ mPetrusjkaProc::mPetrusjkaProc(void){
 	RobJoint   = petr_RobJoint;
 	servonum   = petr_servonum;
 	RobJointAx = petr_RobJointAx; 
+	servoProperties = petr_servoprop;
 	servoControl = (rcServoController *)new pololuservo();
 	pulsecontrol = 0;
 	lastpulsecount = 1;
 	activitylevel = 0.0;
 	prevtick = TickCount();
+	Message("mPetrusjkaProc");
 };
  
 void mPetrusjkaProc::setPortName(char * fn){
 	servoControl->openport(fn);
-};
-
-
-int mPetrusjkaProc::servovalue(int nr,double angle){
-	SERVOPROP sp=petr_servoprop[nr];
-	double v;
-	int pos;
-	v = sp.direction*angle*sp.resolution+sp.center;
-	pos = (int)v;
-	if (pos < sp.min)
-		pos = sp.min;
-	if (pos > sp.max)
-		pos = sp.max;
-	return pos;
 };
 
 int mPetrusjkaProc::setOption(const char * option,int value) {

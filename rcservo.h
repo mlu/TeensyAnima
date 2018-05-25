@@ -3,6 +3,7 @@
 
 //#include "asystype.h"
 #include "anitypes.h"
+#include "movelib.h"
 
 typedef struct {int position;int target;int intervall;bool active;bool inupdate;} servoctrl;
 typedef struct {long lasttime; servoctrl servo[16];} servoblock;

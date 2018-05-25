@@ -13,7 +13,7 @@
 *
 ****************************************************************************/
 #define SERVOMAX 8
-rcServoController * gservolist[SERVOMAX]={NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
+//rcServoController * gservolist[SERVOMAX]={NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
 static bool ginupdate = false;
 
 bool rcServoController::isupdating = false;
@@ -32,10 +32,12 @@ void rcServoController::moveto(int nr, int pos, int intervall) {
 	servoctrl * servo=&(sb.servo[nr]);
 	servo->inupdate=true;
 	servo->active=true;
-	servo->target=pos<<8;
+	servo->target=pos;
 	servo->intervall=intervall;
 	servo->inupdate=false;
-	//printf("ssc:moveto pos=%hi targ=%hi int=%i\n",servo->position,servo->target,servo->intervall);
+	char buf[64];
+	sprintf(buf,"moveto nr=%i pos=%hi targ=%hi int=%i",nr, servo->position,servo->target,servo->intervall);
+	Message((char*) buf);
 }
 
 void rcServoController::updateservopos(){
