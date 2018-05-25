@@ -6,6 +6,7 @@
 #include "sysdisplaytype.h"
 #endif
 #include "anisysd.h"
+#include "aniEngine.h"
 
 #define WORLDCOLORIX  -1
 #define STAGECOLORIX  -2
