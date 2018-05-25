@@ -10,17 +10,11 @@ typedef float anifloat;
 
 typedef struct	{anifloat xx, xy, xz, yx, yy, yz, zx, zy, zz ;} Matrix3f;
 
-typedef struct	{short xx, xy, xz, yx, yy, yz, zx, zy, zz ;} Matrix3i;
-
 typedef struct	{anifloat w, x, y, z ;} Quatf;
-
-typedef struct	{int w, x, y, z ;} Quati;
 
 typedef struct	{anifloat x, y, z ;} Point3f;
 
 typedef struct	{int V, H, R ;} VHR;
-
-typedef struct	{int x, y, z ;} Point3i;
 
 typedef Point3f Point3;
 

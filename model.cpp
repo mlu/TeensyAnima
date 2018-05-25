@@ -57,7 +57,7 @@ void ModelBody_Q(BODYANGLES_Q PosData, Point3 * * theShapeP ,anifloat * lockxp,a
 	Point3 * BodyShape;
 	Quat q[10];
 	Quat * qPos;
-	int i,np,NRightWrist=4,NLeftWrist=3,NUBack=2,NPelvis=1,Next;
+	int i,np,NRightWrist=4,NLeftWrist=3,NUBack=2,NPelvis=1, transformBase;
 
 	qPos=(Quat *)PosData;
 
@@ -71,20 +71,20 @@ void ModelBody_Q(BODYANGLES_Q PosData, Point3 * * theShapeP ,anifloat * lockxp,a
 	np=0;
 
 	/* And the location on the stage */
-	BodyShape[BODYLOCATION].x+=((Point3i *)(qPos+BODYLOCATION))->x;
-	BodyShape[BODYLOCATION].y+=((Point3i *)(qPos+BODYLOCATION))->y;
-	BodyShape[BODYLOCATION].z+=((Point3i *)(qPos+BODYLOCATION))->z;
+	BodyShape[BODYLOCATION].x+= qPos[BODYLOCATION].x;
+	BodyShape[BODYLOCATION].y+= qPos[BODYLOCATION].y;
+	BodyShape[BODYLOCATION].z+= qPos[BODYLOCATION].z;
 
 	AddPoint(PELVIS);
 	/* Add PELVISLOCATION to BodyShape[PELVIS] */
-	BodyShape[PELVIS].x+=((Point3i *)(qPos+PELVISLOC))->x;
-	BodyShape[PELVIS].y+=((Point3i *)(qPos+PELVISLOC))->y;
-	BodyShape[PELVIS].z+=((Point3i *)(qPos+PELVISLOC))->z;
+	BodyShape[PELVIS].x+= qPos[PELVISLOC].x;
+	BodyShape[PELVIS].y+= qPos[PELVISLOC].y;
+	BodyShape[PELVIS].z+= qPos[PELVISLOC].z;
 
 	q[0]=qPos[BODYTURN];
-	trfQuat(q,BodyShape+BODYLOCATION,pointlist);
-	Next=np;
-	
+	trfQuat(q,&BodyShape[BODYLOCATION],pointlist);
+
+	transformBase=np;	
 	AddPoint(WAIST);
 	AddPoint(RWAIST);
 	AddPoint(LWAIST);
@@ -93,125 +93,125 @@ void ModelBody_Q(BODYANGLES_Q PosData, Point3 * * theShapeP ,anifloat * lockxp,a
 	AddPoint(RHIP);
 	AddPoint(LHIP);
 
-/* Now everything is rotated and translated together with pelvis */
-mulQuatQuat(q+NPelvis,qPos+PELVIS,q);
-trfQuat(q+1,BodyShape+PELVIS,pointlist+Next);
-Next=np;
+	/* Now everything is rotated and translated together with pelvis */
+	mulQuatQuat(q+NPelvis,qPos+PELVIS,q);
+	trfQuat(q+1,BodyShape+PELVIS,pointlist+transformBase);
 
-AddPoint(UPPERBACK);
-AddPoint(LBREAST);
-AddPoint(RBREAST);
-mulQuatQuat(q,qPos+WAIST,q+NPelvis);
-trfQuat(q,BodyShape+WAIST,pointlist+Next);
+	transformBase=np;
+	AddPoint(UPPERBACK);
+	AddPoint(LBREAST);
+	AddPoint(RBREAST);
+	mulQuatQuat(q,qPos+WAIST,q+NPelvis);
+	trfQuat(q,BodyShape+WAIST,pointlist+transformBase);
 
-Next=np;
-AddPoint(NECK);
-AddPoint(RSHOULDER);
-AddPoint(LSHOULDER);
-AddPoint(MSHOULDER);
-mulQuatQuat(q+NUBack,qPos+UPPERBACK,q);
-trfQuat(q+NUBack,BodyShape+UPPERBACK,pointlist+Next);
-Next=np;
+	transformBase=np;
+	AddPoint(NECK);
+	AddPoint(RSHOULDER);
+	AddPoint(LSHOULDER);
+	AddPoint(MSHOULDER);
+	mulQuatQuat(q+NUBack,qPos+UPPERBACK,q);
+	trfQuat(q+NUBack,BodyShape+UPPERBACK,pointlist+transformBase);
 
-AddPoint(HEAD);
-mulQuatQuat(q,qPos+NECK,q+NUBack);
-trfQuat(q,BodyShape+NECK,pointlist+Next);
-Next=np;
-   AddPoint(CROWN);
-   AddPoint(NOSE);
-   AddPoint(HEADCENTER);
-   AddPoint(LEYE);
-   AddPoint(REYE);
-mulQuatQuat(q,qPos+HEAD,q);
-trfQuat(q,BodyShape+HEAD,pointlist+Next);
-Next=np;
+	transformBase=np;
+	AddPoint(HEAD);
+	mulQuatQuat(q,qPos+NECK,q+NUBack);
+	trfQuat(q,BodyShape+NECK,pointlist+transformBase);
 
+	transformBase=np;
+	AddPoint(CROWN);
+	AddPoint(NOSE);
+	AddPoint(HEADCENTER);
+	AddPoint(LEYE);
+	AddPoint(REYE);
+	mulQuatQuat(q,qPos+HEAD,q);
+	trfQuat(q,BodyShape+HEAD,pointlist+transformBase);
 
-   AddPoint(LARM);
-mulQuatQuat(q,qPos+LSHOULDER,q+NUBack);
-trfQuat(q,BodyShape+LSHOULDER,pointlist+Next);
-Next=np;
+	transformBase=np;
+	AddPoint(LARM);
+	mulQuatQuat(q,qPos+LSHOULDER,q+NUBack);
+	trfQuat(q,BodyShape+LSHOULDER,pointlist+transformBase);
 
-   AddPoint(LELBOW);
-mulQuatQuat(q,qPos+LARM,q);
-trfQuat(q,BodyShape+LARM,pointlist+Next);
+	transformBase=np;	
+	AddPoint(LELBOW);
+	mulQuatQuat(q,qPos+LARM,q);
+	trfQuat(q,BodyShape+LARM,pointlist+transformBase);
+	
+	transformBase=np;
+	AddPoint(LWRIST);
+	mulQuatQuat(q,qPos+LELBOW,q);
+	trfQuat(q,BodyShape+LELBOW,pointlist+transformBase);
+	
+	transformBase=np;   AddPoint(LFINGERS);   AddPoint(LTHUMB);
+	mulQuatQuat(q+NLeftWrist,qPos+LWRIST,q);
+	trfQuat(q+NLeftWrist,BodyShape+LWRIST,pointlist+transformBase);
+	
+	transformBase=np;   AddPoint(LFINGER1);   AddPoint(LFINGER4);
+	mulQuatQuat(q,qPos+LFINGERS,q+NLeftWrist);
+	trfQuat(q,BodyShape+LFINGERS,pointlist+transformBase);
+	
+	transformBase=np;   AddPoint(LTHUMBNAIL);
+	mulQuatQuat(q,qPos+LTHUMB,q+NLeftWrist);
+	trfQuat(q,BodyShape+LTHUMB,pointlist+transformBase);
+	
+	transformBase=np;AddPoint(RARM);
+	mulQuatQuat(q,qPos+RSHOULDER,q+NUBack);
+	trfQuat(q,BodyShape+RSHOULDER,pointlist+transformBase);
+	
+	transformBase=np;AddPoint(RELBOW);
+	mulQuatQuat(q,qPos+RARM,q);
+	trfQuat(q,BodyShape+RARM,pointlist+transformBase);
+	
+	transformBase=np;   AddPoint(RWRIST);
+	mulQuatQuat(q,qPos+RELBOW,q);
+	trfQuat(q,BodyShape+RELBOW,pointlist+transformBase);
+	
+	transformBase=np;   AddPoint(RFINGERS);   AddPoint(RTHUMB);
+	mulQuatQuat(q+NRightWrist,qPos+RWRIST,q);
+	trfQuat(q+NRightWrist,BodyShape+RWRIST,pointlist+transformBase);
+	
+	transformBase=np;   AddPoint(RFINGER1);   AddPoint(RFINGER4);
+	mulQuatQuat(q,qPos+RFINGERS,q+NRightWrist);
+	trfQuat(q,BodyShape+RFINGERS,pointlist+transformBase);
+	
+	transformBase=np;   AddPoint(RTHUMBNAIL);
+	mulQuatQuat(q,qPos+RTHUMB,q+NRightWrist);
+	trfQuat(q,BodyShape+RTHUMB,pointlist+transformBase);
 
-Next=np;
-   AddPoint(LWRIST);
-mulQuatQuat(q,qPos+LELBOW,q);
-trfQuat(q,BodyShape+LELBOW,pointlist+Next);
+	transformBase=np;
+	AddPoint(LKNEE);
+	AddPoint(LTHIGH);
+	mulQuatQuat(q,qPos+LHIP,q+NPelvis);
+	trfQuat(q,BodyShape+LHIP,pointlist+transformBase);
 
-Next=np;   AddPoint(LFINGERS);   AddPoint(LTHUMB);
-mulQuatQuat(q+NLeftWrist,qPos+LWRIST,q);
-trfQuat(q+NLeftWrist,BodyShape+LWRIST,pointlist+Next);
+	transformBase=np;
+	AddPoint(LANKLE);
+	mulQuatQuat(q,qPos+LKNEE,q);
+	trfQuat(q,BodyShape+LKNEE,pointlist+transformBase);
 
-Next=np;   AddPoint(LFINGER1);   AddPoint(LFINGER4);
-mulQuatQuat(q,qPos+LFINGERS,q+NLeftWrist);
-trfQuat(q,BodyShape+LFINGERS,pointlist+Next);
-Next=np;
+	transformBase=np;
+	AddPoint(LTOE);
+	mulQuatQuat(q,qPos+LANKLE,q);
+	trfQuat(q,BodyShape+LANKLE,pointlist+transformBase);
 
-Next=np;   AddPoint(LTHUMBNAIL);
-mulQuatQuat(q,qPos+LTHUMB,q+NLeftWrist);
-trfQuat(q,BodyShape+LTHUMB,pointlist+Next);
+	transformBase=np;	
+	AddPoint(RKNEE);
+	AddPoint(RTHIGH);
+	mulQuatQuat(q,qPos+RHIP,q+NPelvis);
+	trfQuat(q,BodyShape+RHIP,pointlist+transformBase);
 
-Next=np;AddPoint(RARM);
-mulQuatQuat(q,qPos+RSHOULDER,q+NUBack);
-trfQuat(q,BodyShape+RSHOULDER,pointlist+Next);
+	transformBase=np;
+	AddPoint(RANKLE);
+	mulQuatQuat(q,qPos+RKNEE,q);
+	trfQuat(q,BodyShape+RKNEE,pointlist+transformBase);
 
-Next=np;AddPoint(RELBOW);
-mulQuatQuat(q,qPos+RARM,q);
-trfQuat(q,BodyShape+RARM,pointlist+Next);
-
-Next=np;   AddPoint(RWRIST);
-mulQuatQuat(q,qPos+RELBOW,q);
-trfQuat(q,BodyShape+RELBOW,pointlist+Next);
-
-Next=np;   AddPoint(RFINGERS);   AddPoint(RTHUMB);
-mulQuatQuat(q+NRightWrist,qPos+RWRIST,q);
-trfQuat(q+NRightWrist,BodyShape+RWRIST,pointlist+Next);
-
-Next=np;   AddPoint(RFINGER1);   AddPoint(RFINGER4);
-mulQuatQuat(q,qPos+RFINGERS,q+NRightWrist);
-trfQuat(q,BodyShape+RFINGERS,pointlist+Next);
-Next=np;
-
-Next=np;   AddPoint(RTHUMBNAIL);
-mulQuatQuat(q,qPos+RTHUMB,q+NRightWrist);
-trfQuat(q,BodyShape+RTHUMB,pointlist+Next);
-
-
-
-Next=np;
-   AddPoint(LKNEE);
-   AddPoint(LTHIGH);
-mulQuatQuat(q,qPos+LHIP,q+NPelvis);
-trfQuat(q,BodyShape+LHIP,pointlist+Next);
-Next=np;
-   AddPoint(LANKLE);
-mulQuatQuat(q,qPos+LKNEE,q);
-trfQuat(q,BodyShape+LKNEE,pointlist+Next);
-Next=np;
-   AddPoint(LTOE);
-mulQuatQuat(q,qPos+LANKLE,q);
-trfQuat(q,BodyShape+LANKLE,pointlist+Next);
-Next=np;
-
-   AddPoint(RKNEE);
-   AddPoint(RTHIGH);
-mulQuatQuat(q,qPos+RHIP,q+NPelvis);
-trfQuat(q,BodyShape+RHIP,pointlist+Next);
-Next=np;
-   AddPoint(RANKLE);
-mulQuatQuat(q,qPos+RKNEE,q);
-trfQuat(q,BodyShape+RKNEE,pointlist+Next);
-Next=np;
-   AddPoint(RTOE);
-mulQuatQuat(q,qPos+RANKLE,q);
-trfQuat(q,BodyShape+RANKLE,pointlist+Next);
+	transformBase=np;
+	AddPoint(RTOE);
+	mulQuatQuat(q,qPos+RANKLE,q);
+	trfQuat(q,BodyShape+RANKLE,pointlist+transformBase);
 
 /* Here comes the AutoY height adjustment code */
 //BasePos=BodyShape[BODYLOCATION];
-if ((((Point3i* )(qPos+BODYLOCATION))->y)==0) {
+if (qPos[BODYLOCATION].y==0) {
 	BasePos.y=-MinimalY(pointlist,& basenr);
 	if (BasePos.y != 0.0) {
 	    TranslateY(pointlist,BasePos.y);
