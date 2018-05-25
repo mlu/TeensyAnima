@@ -13,7 +13,7 @@
 *
 ****************************************************************************/
 #define SERVOMAX 8
-//rcServoController * gservolist[SERVOMAX]={NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
+rcServoController * gservolist[SERVOMAX]={NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
 static bool ginupdate = false;
 
 bool rcServoController::isupdating = false;
