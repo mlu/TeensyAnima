@@ -38,61 +38,61 @@ void SetBodyMove(MOVEBLOCK  theMove,MOVEBODY * aBody,long atTime, long localSpee
         of MOVEREC : int cmdType, int cmdNr, long value
 	*/
 
-int cmdtype,bodypart;
-MOVE_POS  newPos, lastPos, floorAngle;
-CInterpolationObject * aPart;
-int cmdnr;
-long value,dur;
-MOVEREC * paramp;
-int changed=0;
-unsigned long interpolationType;
+	int cmdtype,bodypart;
+	MOVE_POS  newPos, lastPos, floorAngle;
+	CInterpolationObject * aPart;
+	int cmdnr;
+	long value,dur;
+	MOVEREC * paramp;
+	int changed=0;
+	unsigned long interpolationType;
 
 
 	paramp=theMove;
 	cmdtype=theMove->cmdType;
 	bodypart=theMove->cmdNr;
 
- 	aPart=(aBody->jointData)+bodypart;
-    aPart->getCurrentPos(CI_VHR,atTime,(POS_DATA *)&lastPos);
+	aPart=(aBody->jointData)+bodypart;
+	aPart->getCurrentPos(CI_VHR,atTime,(POS_DATA *)&lastPos);
 	dur=(10000/localSpeed);
-    if (cmdtype==VHRBodyCmd) normalizeVHR(&lastPos);
+	if (cmdtype==VHRBodyCmd) normalizeVHR(&lastPos);
 
-        newPos=lastPos;               /* default new values are no change */
+	newPos=lastPos;               /* default new values are no change */
 
 /************ IF body part is VHR joint **************************/
-        if (cmdtype==VHRBodyCmd)
-	    while ( (cmdnr=(++paramp)->cmdNr) != EndofBlock) {
-	    paramp->cmdNr=NoToken;
+	if (cmdtype==VHRBodyCmd)
+	while ( (cmdnr=(++paramp)->cmdNr) != EndofBlock) {
+		paramp->cmdNr=NoToken;
 		value=(paramp->value);
 		switch (cmdnr) {
-		case vertangle:
-			newPos.V+=dist360(newPos.V,10*(int)value);
-			changed=changed|V_SET;
-			break;
-		case rotangle:
-			newPos.R+=dist360(newPos.R,10*(int)value);
-			changed=changed|R_SET;
-			break;
-		case horangle:
-			changed=changed|H_SET;
-			newPos.H+=dist360(newPos.H,10*(int)value);
-			break;
-		case dvertangle:
-			changed=changed|V_SET;
-			newPos.V+=10*(int)value;
-			break;
-		case dhorangle:
-			changed=changed|H_SET;
-			newPos.H+=10*(int)value;
-			break;
-		case drotangle:
-			newPos.R+=10*(int)value;
-			changed=changed|R_SET;
-			break;
-		case duration:
-			dur=(100*value/localSpeed);
-			break;
-		default :break;
+			case vertangle:
+				newPos.V+=dist360(newPos.V,10*(int)value);
+				changed=changed|V_SET;
+				break;
+			case rotangle:
+				newPos.R+=dist360(newPos.R,10*(int)value);
+				changed=changed|R_SET;
+				break;
+			case horangle:
+				changed=changed|H_SET;
+				newPos.H+=dist360(newPos.H,10*(int)value);
+				break;
+			case dvertangle:
+				changed=changed|V_SET;
+				newPos.V+=10*(int)value;
+				break;
+			case dhorangle:
+				changed=changed|H_SET;
+				newPos.H+=10*(int)value;
+				break;
+			case drotangle:
+				newPos.R+=10*(int)value;
+				changed=changed|R_SET;
+				break;
+			case duration:
+				dur=(100*value/localSpeed);
+				break;
+			default :break;
 		}
 	}
 /************ IF body part is XYZ position **************************/
@@ -101,55 +101,56 @@ unsigned long interpolationType;
         /* Get stage direction */
         (aBody->jointData)[BODYTURN].getCurrentPos(CI_VHR,atTime,(POS_DATA *)&floorAngle);
 
-	    while ( (cmdnr=(++paramp)->cmdNr) != EndofBlock) {
-                int value10;
-		value=(paramp->value);
-		value10=(int)(value*10);         /* convert cm to mm */
-		switch (cmdnr) {
-		case xpos:
-			changed=changed|V_SET;
-			newPos.V=value10;
-			break;
-		case ypos:
-			changed=changed|H_SET;
-			newPos.H=value10;
-			break;
-		case zpos:
-			changed=changed|R_SET;
-			newPos.R=value10;
-			break;
-		case dxpos:
-			changed=changed|V_SET;
-			newPos.V+=value10;
-			break;
-		case dypos:
-			changed=changed|H_SET;
-			newPos.H+=value10;
-			break;
-		case dzpos:
-			changed=changed|R_SET;
-			newPos.R+=value10;
-			break;
-		case rxpos:
-			if (bodypart == BODYLOCATION) {
-			changed=changed|V_SET|R_SET;
-				newPos.V+=(short)(value10*cosf(3.1416*floorAngle.R/1800.0));
-				newPos.R-=(short)(value10*sinf(3.1416*floorAngle.R/1800.0));
+		while ( (cmdnr=(++paramp)->cmdNr) != EndofBlock) {
+			int value10;
+			value=(paramp->value);
+			value10=(int)(value*10);         /* convert cm to mm */
+			switch (cmdnr) {
+				case xpos:
+					changed=changed|V_SET;
+					newPos.V=value10;
+					break;
+				case ypos:
+					changed=changed|H_SET;
+					newPos.H=value10;
+					break;
+				case zpos:
+					changed=changed|R_SET;
+					newPos.R=value10;
+					break;
+				case dxpos:
+					changed=changed|V_SET;
+					newPos.V+=value10;
+					break;
+				case dypos:
+					changed=changed|H_SET;
+					newPos.H+=value10;
+					break;
+				case dzpos:
+					changed=changed|R_SET;
+					newPos.R+=value10;
+					break;
+				case rxpos:
+					if (bodypart == BODYLOCATION) {
+					changed=changed|V_SET|R_SET;
+						newPos.V+=(short)(value10*cosf(3.1416*floorAngle.R/1800.0));
+						newPos.R-=(short)(value10*sinf(3.1416*floorAngle.R/1800.0));
+					}
+					break;
+				case rzpos:
+					if (bodypart == BODYLOCATION) {
+					changed=changed|V_SET|R_SET;
+						newPos.R+=(short)(value10*cosf(3.1416*floorAngle.R/1800.0));
+						newPos.V+=(short)(value10*sinf(3.1416*floorAngle.R/1800.0));
+					}
+					break;
+				case duration:
+					dur=(100*value/localSpeed);
+					break;
+				default :break;
 			}
-			break;
-		case rzpos:
-			if (bodypart == BODYLOCATION) {
-			changed=changed|V_SET|R_SET;
-				newPos.R+=(short)(value10*cosf(3.1416*floorAngle.R/1800.0));
-				newPos.V+=(short)(value10*sinf(3.1416*floorAngle.R/1800.0));
-			}
-			break;
-		case duration:
-			dur=(100*value/localSpeed);
-			break;
-		default :break;
 		}
-	}}
+	}
 
 
 /********* Part Specific Rules ***************/
@@ -168,39 +169,34 @@ unsigned long interpolationType;
 	default :	break;
 	}
 
+	if (cmdtype==VHRBodyCmd) interpolationType=CI_VHR;
+	if (cmdtype==XYZBodyCmd) interpolationType=CI_XYZ;
 
-
-if (cmdtype==VHRBodyCmd) interpolationType=CI_VHR;
-if (cmdtype==XYZBodyCmd) interpolationType=CI_XYZ;
-
-
-
-/*   Here we set up the interpolation mode and    ?check angles  */
-//if (aPart->flag>1) aPart->flag=1;            /*  all  joints has VHR as default */
-
- if ((changed & V_SET) && (changed & H_SET))
-  if (abs(newPos.H - lastPos.H) >400 ) {
-    switch (bodypart) {
-	case  PELVIS :
-	case  WAIST :
-	case  UPPERBACK :
-	case  NECK :
-	case  HEAD :
-	case  RARM :
-	case  RHIP :
-	case  LARM :
-	case  LHIP : 	interpolationType=CI_VH_R /*'QUAT' */;break;
-	default :break;
+	/*   Here we set up the interpolation mode and    ?check angles  */
+	//if (aPart->flag>1) aPart->flag=1;            /*  all  joints has VHR as default */
+	
+	 if ((changed & V_SET) && (changed & H_SET))
+	  if (abs(newPos.H - lastPos.H) >400 ) {
+	    switch (bodypart) {
+		case  PELVIS :
+		case  WAIST :
+		case  UPPERBACK :
+		case  NECK :
+		case  HEAD :
+		case  RARM :
+		case  RHIP :
+		case  LARM :
+		case  LHIP : 	interpolationType=CI_VH_R /*'QUAT' */;break;
+		default :break;
+		}
+	   }
+	aPart->setInterpolationData(changed,interpolationType,atTime,dur,&lastPos,&newPos);
+	
+	/*  JUMP LOGIC  - 95/03/09   */
+	if (bodypart==BODYLOCATION) {
+		if ( (lastPos.H==0)&&(newPos.H>0 )) aPart->setTimeAdjustment(H_SET | ACC_SET,0,0,-100);
+		if ( (lastPos.H >0)&&(newPos.H==0)) aPart->setTimeAdjustment(H_SET | ACC_SET,0,0, 100);
 	}
-   }
-aPart->setInterpolationData(changed,interpolationType,atTime,dur,&lastPos,&newPos);
-
-/*  JUMP LOGIC  - 95/03/09   */
-if (bodypart==BODYLOCATION) {
-	if ( (lastPos.H==0)&&(newPos.H>0 )) aPart->setTimeAdjustment(H_SET | ACC_SET,0,0,-100);
-	if ( (lastPos.H >0)&&(newPos.H==0)) aPart->setTimeAdjustment(H_SET | ACC_SET,0,0, 100);
-	}
-return;
 }
 
 

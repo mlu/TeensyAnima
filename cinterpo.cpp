@@ -316,40 +316,40 @@ int CInterpolationObject::compVH_RfromVH_R(VHR * destVHR , long atTime) {
 
 int CInterpolationObject::compVHRfromVHR(VHR * destVHR , long atTime)
 {
-int r=0;
-anifloat t;
-MOVE_POS newPos;
-     /* Interpolate to present time */
-if ( (endTime[0]-atTime) > 0 )
-   if (  (atTime-startTime[0])> 0 ) {
-	t=normalize_time(startTime[0],endTime[0],atTime);
-	t=adjust_time(0,t);
-      newPos.V=(short)(((1-t)*prevVHR.V+t*nextVHR.V));
-      r=1;
-   	}
-   else  newPos.V = prevVHR.V ; /* if (t1 <= 0 ) */
-else  newPos.V = nextVHR.V ;    /* if (t2 <= 0 ) */
-if ( (endTime[1]-atTime) > 0 )
-   if (  (atTime-startTime[1])> 0 ) {
-	t=normalize_time(startTime[1],endTime[1],atTime);
-	t=adjust_time(1,t);
-      newPos.H=(short)(((1-t)*prevVHR.H+t*nextVHR.H));
-      r=1;
-     }
-   else
-   newPos.H = prevVHR.H ;        /* if (t1 <= 0 ) */
-else   newPos.H = nextVHR.H ;    /* if (t2 <= 0 ) */
-if ( (endTime[2]-atTime) > 0 )
-   if (  (atTime-startTime[2])> 0 ) {
-	  t=normalize_time(startTime[2],endTime[2],atTime);
-	  t=adjust_time(2,t);
-      newPos.R=(short)(((1-t)*prevVHR.R+t*nextVHR.R));
-      r=1;
-   	}
-   else  newPos.R = prevVHR.R ; /* if (t1 <= 0 ) */
-else  newPos.R = nextVHR.R ;    /* if (t2 <= 0 ) */
-*destVHR=newPos;
-return r;
+	int r=0;
+	anifloat t;
+	MOVE_POS newPos;
+	/* Interpolate to present time */
+	if ( (endTime[0]-atTime) > 0 )
+	   if (  (atTime-startTime[0])> 0 ) {
+		t=normalize_time(startTime[0],endTime[0],atTime);
+		t=adjust_time(0,t);
+	      newPos.V=(short)(((1-t)*prevVHR.V+t*nextVHR.V));
+	      r=1;
+	   	}
+	   else  newPos.V = prevVHR.V ; /* if (t1 <= 0 ) */
+	else  newPos.V = nextVHR.V ;    /* if (t2 <= 0 ) */
+	if ( (endTime[1]-atTime) > 0 )
+	   if (  (atTime-startTime[1])> 0 ) {
+		t=normalize_time(startTime[1],endTime[1],atTime);
+		t=adjust_time(1,t);
+	      newPos.H=(short)(((1-t)*prevVHR.H+t*nextVHR.H));
+	      r=1;
+	     }
+	   else
+	   newPos.H = prevVHR.H ;        /* if (t1 <= 0 ) */
+	else   newPos.H = nextVHR.H ;    /* if (t2 <= 0 ) */
+	if ( (endTime[2]-atTime) > 0 )
+	   if (  (atTime-startTime[2])> 0 ) {
+		  t=normalize_time(startTime[2],endTime[2],atTime);
+		  t=adjust_time(2,t);
+	      newPos.R=(short)(((1-t)*prevVHR.R+t*nextVHR.R));
+	      r=1;
+	   	}
+	   else  newPos.R = prevVHR.R ; /* if (t1 <= 0 ) */
+	else  newPos.R = nextVHR.R ;    /* if (t2 <= 0 ) */
+	*destVHR=newPos;
+	return r;
 }
 
 int CInterpolationObject::setupQuatInterp(void) {
