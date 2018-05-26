@@ -59,7 +59,7 @@ SERVOPROP petr_servoprop[8]={
 
 /***************************************************************************/
 long prevtick;   /* For timing of activity */
-static double timeconstant = TIMECONSTANT;
+static float timeconstant = TIMECONSTANT;
 static int    pulsectrlsensitivity = SENSITIVITY;
 
 /* PETRUSKJA Marionett doll axes */
@@ -107,7 +107,7 @@ int mPetrusjkaProc::exec(void) {
 	// Check activity
 	int running = isRunning();
 	long tick = TickCount();
-	double dt = (tick-prevtick)*0.001/timeconstant;
+	float dt = (tick-prevtick)*0.001/timeconstant;
 	bool freeze=false;
 
 	if (pulsecontrol) {

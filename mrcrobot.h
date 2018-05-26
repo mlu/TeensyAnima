@@ -24,7 +24,7 @@ typedef struct {
 	int max;
 	int center;
 	int direction;
-	double resolution /* steg/grad */;
+	float resolution /* steg/grad */;
 //	char axis;
 } SERVOPROP;
 
@@ -50,7 +50,7 @@ protected:
     void  ComputeRobotAngles(long atTime);
 
     // Controller and servo dependent angle to value conversion
-    virtual int servovalue(int nr,double angle);
+    virtual int servovalue(int nr, float angle);
 
 	// Physical joint information
     int   nJoints;

@@ -30,14 +30,16 @@ rcServoController::~rcServoController() {
 
 void rcServoController::moveto(int nr, int pos, int intervall) {
 	servoctrl * servo=&(sb.servo[nr]);
-	servo->inupdate=true;
-	servo->active=true;
-	servo->target=pos;
-	servo->intervall=intervall;
-	servo->inupdate=false;
-	char buf[64];
-	sprintf(buf,"moveto nr=%i pos=%hi targ=%hi int=%i",nr, servo->position,servo->target,servo->intervall);
-	Message((char*) buf);
+	if (pos != servo->target) {
+		servo->inupdate=true;
+		servo->active=true;
+		servo->target=pos;
+		servo->intervall=intervall;
+		servo->inupdate=false;
+		char buf[64];
+		sprintf(buf,"moveto time=%li nr=%i pos=%hi targ=%hi int=%i",thisTime, nr, servo->position,servo->target,servo->intervall);
+		Message((char*) buf);
+	}
 }
 
 void rcServoController::updateservopos(){
@@ -53,7 +55,7 @@ void rcServoController::updateservopos(){
 		if (servo->active && !servo->inupdate) 
 		{
 			//printf("ssc:updatesb pos=%hi targ=%hi int=%i dt=%li\n",servo->position,servo->target,servo->intervall, dt);
-			int pos,pos0=(servo->position)>>8;
+			int pos,pos0=servo->position;
 			if (dt>=servo->intervall) 
 			{
 				servo->position=servo->target;
@@ -66,7 +68,7 @@ void rcServoController::updateservopos(){
 				servo->intervall -= dt;
 				servo->position += delta;
 			}
-			pos=(servo->position)>>8;
+			pos=servo->position;
 			if (pos != pos0)
 			{
 				set(k,pos);

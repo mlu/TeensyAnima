@@ -51,7 +51,7 @@ mRCRobotProc::mRCRobotProc(void) {
 
 mRCRobotProc::~mRCRobotProc() {
   rcServoController::stopupdate();
-  printf( "smRCRobotProc remove dancer, port was %s \n",filename);
+  Message("mRCRobotProc remove dancer");
   if (servoControl != NULL ) {
      rcServoController::removeServo(servoControl);
      delete servoControl;
@@ -112,7 +112,7 @@ void mRCRobotProc::ComputeRobotAngles(long atTime){
    /* Convert Anima VHR angles to servovalues */
    /* Send to servo as class as a ramp */
    int joint,pos,dt;
-   double angle = 0;
+   float angle = 0;
    long t,nt;
    MOVE_POS  Pos;
    for (joint=0;joint<nJoints;joint++) {
@@ -126,7 +126,7 @@ void mRCRobotProc::ComputeRobotAngles(long atTime){
       else {
          t=atTime;
       }
-      theBody.jointData[RobJoint[joint]].getCurrentPos(CI_VHR,t,(POS_DATA *)&Pos);
+      theBody.jointData[RobJoint[joint]].getCurrentPos(CI_VHR, t, (POS_DATA *)&Pos);
       switch (RobJointAx[joint]) {
          case 'R':
             angle=Pos.R/10;
@@ -146,9 +146,9 @@ void mRCRobotProc::ComputeRobotAngles(long atTime){
    }
 }
 
-int mRCRobotProc::servovalue(int nr,double angle){
+int mRCRobotProc::servovalue(int nr, float angle){
 	SERVOPROP sp=servoProperties[nr];
-	double v;
+	float v;
 	int pos;
 	v = sp.direction*angle*sp.resolution+sp.center;
 	pos = (int)v;

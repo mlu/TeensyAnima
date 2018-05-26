@@ -22,6 +22,9 @@
 *
 ****************************************************************************/
 
+/* Use Serial4 on pin32 for Teensy 3.6 */
+HardwareSerial * Port = &Serial4;
+
 pololuservo::pololuservo() {
 	bufs=bufe=0;
 	sb.lasttime=TickCount();
@@ -39,24 +42,21 @@ pololuservo::~pololuservo() {
 }
 
 void pololuservo::openport(char * portname) {
-	Serial1.begin(57600);
+	Port->begin(57600);
 	isopen = true;
 	bufs = bufe = 0;
-}
+	Message("Open Port");
+} 
 
 void pololuservo::set(int nr,int pos) {
-	
-	if (((bufe+8)%POLOLUBUFSIZE) != bufs) {
-		buf[bufe] = 0x84;
-		buf[bufe+1] = nr&0x7F;
-		buf[bufe+2] = pos & 0x7F;
-		buf[bufe+3] = (pos>>7) & 0x7F;
-		bufe = (bufe+4)%POLOLUBUFSIZE;
-	}
+		buf[bufe++] = 0x84;
+		buf[bufe++] = nr&0x7F;
+		buf[bufe++] = pos & 0x7F;
+		buf[bufe++] = (pos>>7) & 0x7F;
 }
 
 void pololuservo::send() { 
-	Serial1.write(buf,bufe);
+	Port->write(buf,bufe);
 	bufe = 0;
 }
 

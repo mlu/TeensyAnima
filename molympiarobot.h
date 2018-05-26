@@ -40,7 +40,7 @@ private:
     long  FindNextFutureTime(long atTime);
     void  WriteRCMove();
     // Controller and servo dependent angle to value conversion
-    virtual int servovalue(int nr,double angle);
+    virtual int servovalue(int nr, float angle);
 
     int   nJoints;
     int * RobJoint;

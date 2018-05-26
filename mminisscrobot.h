@@ -35,7 +35,7 @@ public:
     void setPortName(char * fn);
 
 private:
-    int servovalue(int nr,double angle);
+    int servovalue(int nr, float angle);
     //ssc * servo;
 };
 

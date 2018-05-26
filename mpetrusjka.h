@@ -19,7 +19,7 @@ public:
 private:
     int pulsecontrol;
     unsigned int lastpulsecount;
-    double activitylevel;
+    float activitylevel;
 };
 
 #endif
