@@ -157,7 +157,7 @@ int    doCommandBlock(int i,char * buf) {
 			MoveText * mt=new MoveText();
 			mt->copyAsBuffer(buf);         
 			mt->autoclean=true;
-			theEngine->theDancer[i]->newrMoveProc(mt,DEALLOC | AUTOKILL );
+			theEngine->theDancer[i]->newrMoveProc(mt, DEALLOC | AUTOKILL );
 			return 0;
 		}
 	/* ELSE */

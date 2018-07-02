@@ -51,16 +51,20 @@ SERVOPROP petr_servoprop[8]={
 };
 
 // Sensitivity must be adjusted for dutycycle
-#define TIMECONSTANT    1.0
+//#define TIMECONSTANT    1.0
 // 10% dutycycle , 10*base vale
-#define SENSITIVITY     100
+//#define SENSITIVITY     100
 #define STARTACTIVITY   1.4
 #define RESETACTIVITY   0.5
+
+#define TIMECONSTANT    2.0
+#define SENSITIVITY     75
 
 /***************************************************************************/
 long prevtick;   /* For timing of activity */
 static float timeconstant = TIMECONSTANT;
 static int    pulsectrlsensitivity = SENSITIVITY;
+float gPulseActivity;
 
 /* PETRUSKJA Marionett doll axes */
 int  petr_nJoints=7;
@@ -76,7 +80,7 @@ mPetrusjkaProc::mPetrusjkaProc(void){
 	servoProperties = petr_servoprop;
 	servoControl = (rcServoController *)new pololuservo();
 	pulsecontrol = 0;
-	lastpulsecount = 1;
+	lastpulsecount = PulseCount();
 	activitylevel = 0.0;
 	prevtick = TickCount();
 	Message("mPetrusjkaProc");
@@ -115,9 +119,10 @@ int mPetrusjkaProc::exec(void) {
 		activitylevel = activitylevel*exp(-dt);
 		if (pulsecount != lastpulsecount) {
 			lastpulsecount = pulsecount;
-//			activitylevel = activitylevel + ezusb_pulsectrlsensitivity*dt;
+			activitylevel = activitylevel + pulsectrlsensitivity*dt;
 			//printf("mRCEzUSBProc::Pulse count is %i,dt %f, activity %f \n",pulsecount,dt,activitylevel);
 		}
+		gPulseActivity = activitylevel;
 		if ((!running) && (activitylevel>STARTACTIVITY)) {
 			// Start from the beginning
 			doStart();

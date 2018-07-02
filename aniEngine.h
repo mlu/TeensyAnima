@@ -46,6 +46,8 @@
 #define DANCER_PETRUSJKA  6
 #endif
 
+extern int anima_debuglevel;
+
 class aniEngine {
 public:
    aniEngine();

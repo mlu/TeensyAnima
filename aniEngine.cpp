@@ -28,6 +28,8 @@
 #include "wdspopengl.h"
 #endif
 
+int anima_debuglevel = 1;
+
 extern void initExtfun(void);
 extern void initCorefun(void);
 extern long getFDate(char * fName,VOLID_TYPE * volID);

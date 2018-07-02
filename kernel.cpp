@@ -84,7 +84,7 @@ while ((arg-- >= 0) ) {
 	}
 
 	status=KS_READY;
-	return activity && running;
+	return activity; // && running;
 }
 
 int RTKernel::addProcess(RTProcess * p,int mode,RTProcess * q) {

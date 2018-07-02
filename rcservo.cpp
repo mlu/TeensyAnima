@@ -1,3 +1,4 @@
+#include "aniEngine.h"
 #include "ssc.h"
 #include "clock.h"
 
@@ -36,9 +37,11 @@ void rcServoController::moveto(int nr, int pos, int intervall) {
 		servo->target=pos;
 		servo->intervall=intervall;
 		servo->inupdate=false;
-		char buf[64];
-		sprintf(buf,"moveto time=%li nr=%i pos=%hi targ=%hi int=%i",thisTime, nr, servo->position,servo->target,servo->intervall);
-		Message((char*) buf);
+		if (anima_debuglevel>2) {
+			char buf[64];
+			sprintf(buf,"moveto time=%li nr=%i pos=%hi targ=%hi int=%i",thisTime, nr, servo->position,servo->target,servo->intervall);
+			Message((char*) buf);
+		}
 	}
 }
 
