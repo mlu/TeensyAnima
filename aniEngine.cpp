@@ -145,7 +145,8 @@ int  aniEngine::loadDancerFile(int i){
        return 1;
 	}
     else filedate[i]=0;
-return 0;
+    // No file loaded
+	return 0;
 }
 
 int  aniEngine::setDancerOption(int dancer,const char * option,int value){

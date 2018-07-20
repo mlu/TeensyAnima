@@ -1,6 +1,7 @@
 /******************************************
 DOS and UNIX file opening and buffer allocation
 
+This version is for SD cards on Teesy 3.x
 **************************************/
 
 #include <stdlib.h>
