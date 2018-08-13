@@ -18,34 +18,72 @@
 #include <SD.h>
 #include <SerialFlash.h>
 
+/*******************************************************
+ * 
+ * Pin Configuration
+ * 
+ *******************************************************/
+
+/* Use Serial4 on pin32 for servo controller output
+ * file: libraries/TeensyAnima/pololuservo.cpp:26
+ * HardwareSerial * Port = &Serial4;
+ */
+
+#define Nextion Serial5
+
+#define HALL_PULSE_PIN 38
+
+// Use Teensy 3.6 SD card
+#define SDCARD_CS_PIN    BUILTIN_SDCARD
+#define SDCARD_MOSI_PIN  11  // not actually used
+#define SDCARD_SCK_PIN   13  // not actually used
+
+/*******************************************************
+ * 
+ * Globals
+ * 
+ *******************************************************/
+
+extern float gPulseActivity;
+
+int dancer;
+
+/*******************************************************
+ * 
+ * Audio interface
+ * 
+ *******************************************************/
+
 extern AudioPlaySdWav           playWav1;
 extern AudioControlSGTL5000     sgtl5000_1;
 
 // Audio implementation is found in TeensyAnima/tsoundproc.cpp
 
-// Use these with the Teensy 3.5 & 3.6 SD card
-#define SDCARD_CS_PIN    BUILTIN_SDCARD
-#define SDCARD_MOSI_PIN  11  // not actually used
-#define SDCARD_SCK_PIN   13  // not actually used
-
 const int chipSelect = BUILTIN_SDCARD;
-
-#define HALL_PULSE_PIN 39
-int dancer;
 
 /*******************************************************
  * 
  * Nextion HMI user interface
  * 
  *******************************************************/
-
-#define Nextion Serial5
-
+/*  Name ,   cid,   function
+ *  
+ *  "b0"       2      Start
+ *  "b1"       3      Stop
+ *  
+ *  "bt0"      9      Set Auto/Pulsecontrol mode
+ *  "bt1"     10      Set Manual/No pulsecontrol mode
+ *  
+ *  "t1"              Status display
+ *  "t2"              Time display text string
+ *
+ *  "j0"              Activity bar
+ *  
+ */
 #define NEXTION_STATE_IDLE  0
 #define NEXTION_STATE_TOUCHEVT  1
 #define NEXTION_STATE_NUMERIC  2
 #define NEXTION_STATE_STRING   3
-
 
 int NextionState = NEXTION_STATE_IDLE;
 int endcount = 0;
@@ -57,7 +95,7 @@ int NextionCompId = 0;
 int NextionEvent = 0;
 uint32_t NextionValue = 0;
 
-void NextionHandleEvent(uint8_t pid, uint8_t cid,uint8_t evnt) {
+void NextionHandleEvent(uint8_t pid, uint8_t cid, uint8_t evnt) {
 /* This is where we actually handle user interface events */
   Serial.printf("Event page:%i, component:%i, event:%i \n",pid,cid,evnt);
 /* This is where we actually handle user interface events */
@@ -77,6 +115,24 @@ void NextionHandleEvent(uint8_t pid, uint8_t cid,uint8_t evnt) {
 void NextionHandleValue(uint32_t value) {
 /* This is where we actually handle user interface events */
 
+}
+
+void NextionShowTime() {
+  int t = GetClockInfo(CLK_TIME);
+  char text[64];
+  sprintf(text,"%i:%i.%i",t/6000,(t/100)%60,t%100);
+  Serial.printf("%s\n",text);
+  NextionSetText("t2",text);
+}
+
+void NextionShowActivity() {
+  int activity = 50*gPulseActivity;
+  if (activity>100) activity = 100;
+  if (activity<26) Nextion.printf("j0.pco=63488\xFF\xFF\xFF");
+  else if (activity<50) Nextion.printf("j0.pco=64512\xFF\xFF\xFF");
+  else if (activity<70) Nextion.printf("j0.pco=65504\xFF\xFF\xFF");
+  else Nextion.printf("j0.pco=1024\xFF\xFF\xFF");
+  NextionSetValue("j0",activity);
 }
 
 void NextionParseEvent(uint8_t c) {
@@ -198,6 +254,10 @@ void debounce(uint32_t newbits) {
     // debounce_value = (debounce_value|mark)&space;
 }
 
+/*  PulseCount is called from 
+ *  file: libraries/TeensyAnima/mpetrusjka.cpp:26
+ */
+
 uint32_t pulse_count = 0;
 uint32_t pulse_state = 0;
 
@@ -210,8 +270,6 @@ uint32_t PulseCount() {
   }
   return pulse_count;
 }
-
-extern float gPulseActivity;
 
 /*******************************************************
  * 
@@ -253,13 +311,21 @@ void setup() {
   setDancerFile(dancer, (char *)"PETRUSJ.MOV", NULL);
   Serial.println(dancer);
 
-  loadDancerFile(dancer);
+  int res = loadDancerFile(dancer);
+  if (res>0) {
+    Serial.println("Choreography Loaded");
+    setDancerOption(dancer, "PULSECONTROL", 1);
+    NextionSetValue("bt0", 1);
+    NextionSetValue("bt1", 0);
+    delay(1000);
 
-  Serial.println("Choreography Loaded");
-  setDancerOption(dancer, "PULSECONTROL", 1);
-  delay(1000);
-
-  doStart();
+    doStart();
+  }
+  else {
+    NextionSetText("t1","MOV not found");
+    NextionSetValue("bt0", 0);
+    NextionSetValue("bt1", 0);
+  }
 
 }
 
@@ -283,36 +349,37 @@ void loop() {
       if (newstatus == 0 ) Serial.println("Kernel inactive");
       kstatus = newstatus;
     }
-    if (fcount==100) {
-      if (kstatus>0) {
-        int t = GetClockInfo(CLK_TIME);
-        char text[64];
-        sprintf(text,"%i:%i.%i",t/6000,(t/100)%60,t%100);
-        Serial.printf("%s\n",text);
-        NextionSetText("t2",text);
-        int activity = 50*gPulseActivity;
-        if (activity>100) activity = 100;
-        if (activity<26) Nextion.printf("j0.pco=63488\xFF\xFF\xFF");
-        else if (activity<50) Nextion.printf("j0.pco=64512\xFF\xFF\xFF");
-        else if (activity<70) Nextion.printf("j0.pco=65504\xFF\xFF\xFF");
-        else Nextion.printf("j0.pco=1024\xFF\xFF\xFF");
-        NextionSetValue("j0",activity);
-//        Serial.println(pulse_count);
-//        Serial.println(activity);
-        if (playWav1.isPlaying()) NextionSetText("t1","Audio Playing");
-      }
-      /*
-      Serial.print(micros()-frameTime_uS);
-      Serial.print("  ");
-      Serial.println();
-      */
-      fcount = 0;
-    }
     fcount++;
     if (playingaudio && !playWav1.isPlaying()) {
       Serial.println("Sound finished");
       playingaudio = 0;
     }
+  }
+
+  /* Reporting every 100 frames */
+  if (fcount==100) {
+    if (kstatus>0) {
+      int run = GetClockInfo(CLK_RUN);
+      NextionShowTime();
+      NextionShowActivity();
+//        Serial.println(pulse_count);
+//        Serial.println(activity);
+      if (playWav1.isPlaying()) NextionSetText("t1","Audio Playing");
+      else {
+        if (run) {
+          NextionSetText("t1","Running");
+        }
+        else {
+          NextionSetText("t1","Stopped");
+        }
+      }
+    }
+    /*
+    Serial.print(micros()-frameTime_uS);
+    Serial.print("  ");
+    Serial.println();
+    */
+    fcount = 0;
   }
 
   while (Serial.available()) {
