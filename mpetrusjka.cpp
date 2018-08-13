@@ -51,12 +51,14 @@ SERVOPROP petr_servoprop[8]={
 };
 
 // Sensitivity must be adjusted for dutycycle
-//#define TIMECONSTANT    1.0
-// 10% dutycycle , 10*base vale
-//#define SENSITIVITY     100
 #define STARTACTIVITY   1.4
 #define RESETACTIVITY   0.5
 
+// Constants from original ezusb code
+//#define TIMECONSTANT    1.0
+//#define SENSITIVITY     100
+
+// Current constants used on Teensy 3.6
 #define TIMECONSTANT    2.0
 #define SENSITIVITY     75
 
@@ -120,7 +122,7 @@ int mPetrusjkaProc::exec(void) {
 		if (pulsecount != lastpulsecount) {
 			lastpulsecount = pulsecount;
 			activitylevel = activitylevel + pulsectrlsensitivity*dt;
-			//printf("mRCEzUSBProc::Pulse count is %i,dt %f, activity %f \n",pulsecount,dt,activitylevel);
+			//printf("mPetrusjkaProc::Pulse count is %i,dt %f, activity %f \n",pulsecount,dt,activitylevel);
 		}
 		gPulseActivity = activitylevel;
 		if ((!running) && (activitylevel>STARTACTIVITY)) {
@@ -129,7 +131,7 @@ int mPetrusjkaProc::exec(void) {
 		}
 		if ((running) && (activitylevel<1)) {
 			// Stop the dancer but keep music running
-			//printf("mRCEzUSBProc::Pulse count is %i,dt %f, activity %f \n",pulsecount,dt,activitylevel);
+			//printf("mPetrusjkaProc::Pulse count is %i,dt %f, activity %f \n",pulsecount,dt,activitylevel);
 			freeze = true;
 		}
 		if ((running) && (activitylevel<RESETACTIVITY)) {
