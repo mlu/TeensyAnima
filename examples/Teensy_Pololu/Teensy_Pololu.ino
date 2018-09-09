@@ -2,7 +2,48 @@
 
 
 Servo servo[8];
-int servopin[8] = {2, 3, 4, 5, 6, 7, 8, 9};
+int servopin[8] = {12, 10, 9, 8, 7, 6, 5, 4};
+
+/*****************************************************
+
+Petrusjka servo settings from mpetrusjka.cpp
+                        min   max   zero  dir    (0.25ms)
+SERVOPROP petr_servoprop[8]={
+   {(char*)"RKNEE V",  4720, 7520, 4720,  1, 93.6},
+   {(char*)"RHIP V",   4800, 7520, 7520, -1, 23.4},
+   {(char*)"LKNEE V",  4480, 3760, 3760, -1, 23.4},
+   {(char*)"LHIP V",   4640, 7520, 4640,  1, 23.4},
+   {(char*)"UPPERBACK",4160, 7680, 4160,  1, 69.2},
+   {(char*)"RARM V",   4240, 8080, 8080, -1, 29.6},
+   {(char*)"LARM V",   4240, 8080, 4240,  1, 29.6},
+   {(char*)"NONE",     0, 0, 0, 0, 0}
+};
+
+- Bestäm neutral läge, till kolumn 3
+- Bestäm maximalt utslag 
+SERVOPROP petr_servoprop[8]={
+   {(char*)"RKNEE V",  4720, 7520, 7520, -1, 93.6}, prel
+   {(char*)"RHIP V",   4800, 7500, 7500, -1, 23.4}, 
+   {(char*)"LKNEE V",  4760, 6760, 4760,  1, 23.4}, prel
+   {(char*)"LHIP V",   4640, 7520, 4540,  1, 23.4},
+   {(char*)"UPPERBACK",4160, 7680, 4160,  1, 69.2},
+   {(char*)"RARM V",   4240, 8080, 8080, -1, 29.6},
+   {(char*)"LARM V",   4240, 8080, 4240,  1, 29.6},
+   {(char*)"NONE",     0, 0, 0, 0, 0}
+};
+
+*****************************************************/
+uint32_t petr_servozero[8]={
+   7020,
+   7500,
+   4560,
+   4540,
+   4160,
+   8080,
+   4080,
+   0000
+};
+
 
 /*****************************************************
 * 
@@ -72,8 +113,9 @@ void ParseServoCmd(uint8_t ch) {
 
 void setup() {
 
-  for (int nr=0;nr<8; nr++) {
+  for (int nr=0;nr<7; nr++) {
     servo[nr].attach(servopin[nr], 800, 2200); 
+    servo[nr].writeMicroseconds(petr_servozero[nr]>>2);
   }
 
   Serial1.begin(57600);

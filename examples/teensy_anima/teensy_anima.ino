@@ -4,7 +4,7 @@
  * - Running on Teensy 3.6 board
  * - Teensy SGTL5000 Audio Adapter
  * - Pololu servo interface
- * 
+ * - tlv49645 Hall sensor pin 30
  * 
  * Magnus Lundin 2018
  * 
@@ -31,7 +31,7 @@
 
 #define Nextion Serial5
 
-#define HALL_PULSE_PIN 38
+#define HALL_PULSE_PIN 30
 
 // Use Teensy 3.6 SD card
 #define SDCARD_CS_PIN    BUILTIN_SDCARD
@@ -280,7 +280,7 @@ uint32_t PulseCount() {
 void setup() {
 
   pinMode(13,OUTPUT);
-  pinMode(HALL_PULSE_PIN, INPUT_PULLUP);
+  pinMode(HALL_PULSE_PIN, INPUT);
 
   /* Audio board control */
   sgtl5000_1.enable();
@@ -292,7 +292,7 @@ void setup() {
 //  Nextion.begin(57600);
 //  Nextion.begin(9600);
   Nextion.begin(19200);
-  delay(100);
+  delay(400);
   Nextion.printf("\xFF\xFF\xFF");
   delay(100);
   Nextion.printf("dim=40\xFF\xFF\xFF");
@@ -317,7 +317,7 @@ void setup() {
     setDancerOption(dancer, "PULSECONTROL", 1);
     NextionSetValue("bt0", 1);
     NextionSetValue("bt1", 0);
-    delay(1000);
+    delay(2000);
 
     doStart();
   }

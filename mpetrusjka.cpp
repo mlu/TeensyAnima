@@ -39,12 +39,27 @@ SERVOPROP petr_servoprop1[8]={
 };
 
 /* Relation betwen servo position units, controller dependent, and Anima angles - resolution 0.25ms */
-SERVOPROP petr_servoprop[8]={
+/* Version pre 2018 
+SERVOPROP petr_servoprop_orig[8]={
    {(char*)"RKNEE V",  4720, 7520, 4720,  1, 93.6},
-   {(char*)"RHIP V",   4800, 7520, 7520, -1, 23.4},
-   {(char*)"LKNEE V",  4480, 3760, 3760, -1, 23.4},
-   {(char*)"LHIP V",   4640, 7520, 4640,  1, 23.4},
+   {(char*)"RHIP V",   4800, 7520, 7520, -1, 93.6},
+   {(char*)"LKNEE V",  4480, 3760, 3760, -1, 93.6},
+   {(char*)"LHIP V",   4640, 7520, 4640,  1, 93.6},
    {(char*)"UPPERBACK",4160, 7680, 4160,  1, 69.2},
+   {(char*)"RARM V",   4240, 8080, 8080, -1, 29.6},
+   {(char*)"LARM V",   4240, 8080, 4240,  1, 29.6},
+   {(char*)"NONE",     0, 0, 0, 0, 0}
+};
+*/
+
+/* Relation betwen servo position units, controller dependent, and Anima angles - resolution 0.25ms */
+/* Version september 2018 */
+SERVOPROP petr_servoprop[8]={
+   {(char*)"RKNEE V",  4720, 7520, 7250, -1, 93.6},
+   {(char*)"RHIP V",   4800, 7520, 7520, -1, 93.6},
+   {(char*)"LKNEE V",  4480, 7760, 4760,  1, 93.6},
+   {(char*)"LHIP V",   4640, 7520, 4640,  1, 93.6},
+   {(char*)"UPPERBACK",4160, 7680, 4160,  1, 93.2},
    {(char*)"RARM V",   4240, 8080, 8080, -1, 29.6},
    {(char*)"LARM V",   4240, 8080, 4240,  1, 29.6},
    {(char*)"NONE",     0, 0, 0, 0, 0}
